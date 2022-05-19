@@ -20,59 +20,14 @@ class AlumnoController extends Controller
     public function index()
     {
        
-        $alumnos = Alumnos::select('Alumnos.id','Alumnos.primer_nombre','Alumnos.segundo_nombre','Alumnos.primer_apellido','Alumnos.segundo_apellido','Alumnos.identificacion','Alumnos.genero','Alumnos.fch_nacimiento','P.nombre AS profesor','C.nombre AS curso')        
+        $alumnos = Alumnos::select('Alumnos.id','Alumnos.primer_nombre','Alumnos.segundo_nombre','Alumnos.primer_apellido','Alumnos.segundo_apellido','Alumnos.identificacion','Alumnos.genero','Alumnos.fch_nacimiento','Alumnos.edad','P.nombre AS profesor','C.nombre AS curso', 'E.nombre AS etario')        
                 ->join('salones AS S', 'Alumnos.salon_id', '=', 'S.id')
                 ->join('profesores AS P', 'Alumnos.profesor_id', '=', 'P.id')
                 ->join('cursos AS C', 'Alumnos.salon_id', '=', 'C.salon_id')
+                ->join('etario AS E', 'E.id', '=', 'Alumnos.etario_id')                
                 ->get();
 
-
-        $etario = DB::table('etario')->get();
-
-        foreach($etario as  $etarioRow){
-            $etarios[]=$etarioRow->nombre;
-        }
-
-        foreach ($alumnos as $alumnoRow) {
-            $fecha_nacimiento = $alumnoRow->fch_nacimiento;
-
-            $dia=date("d");
-            $mes=date("m");
-            $ano=date("Y");
-
-            $dianaz=date("d",strtotime($fecha_nacimiento));
-            $mesnaz=date("m",strtotime($fecha_nacimiento));
-            $anonaz=date("Y",strtotime($fecha_nacimiento));
-            
-            if (($mesnaz == $mes) && ($dianaz > $dia)) {
-                $ano=($ano-1); 
-            }
-            
-            if ($mesnaz > $mes) {
-                $ano=($ano-1);
-            }
-            //EDAD     
-            $edad=($ano-$anonaz);
-
-            if($edad < 5){
-                $valEtarios = $etarios[0];
-
-            }elseif($edad >= 5 || $edad <= 10){
-                $valEtarios = $etarios[1];
-
-            }elseif($edad > 10 || $edad <= 13){
-                $valEtarios = $etarios[2];
-
-            }elseif($edad > 13 || $edad <= 18){
-                $valEtarios = $etarios[3];
-
-            }elseif($edad > 18){
-                $valEtarios = $etarios[4];
-            }
-            
-        }
-
-        return view('home', compact('alumnos', 'edad', 'valEtarios'));
+        return view('home', compact('alumnos'));
     }
 
     /**
@@ -108,6 +63,42 @@ class AlumnoController extends Controller
             'profesor' => 'required',
             'curso' => 'required'
         ]);
+        
+        $fecha_nacimiento =  request('date');
+
+        $dia=date("d");
+        $mes=date("m");
+        $ano=date("Y");
+
+        $dianaz=date("d",strtotime($fecha_nacimiento));
+        $mesnaz=date("m",strtotime($fecha_nacimiento));
+        $anonaz=date("Y",strtotime($fecha_nacimiento));
+        
+        if (($mesnaz == $mes) && ($dianaz > $dia)) {
+            $ano=($ano-1); 
+        }
+        
+        if ($mesnaz > $mes) {
+            $ano=($ano-1);
+        }
+        //EDAD     
+        $edad=($ano-$anonaz);
+
+        if($edad < 5){
+            $valEtarios = 1;
+
+        }elseif($edad >= 5 && $edad <= 10){
+            $valEtarios = 2;
+
+        }elseif($edad > 10 && $edad <= 13){
+            $valEtarios = 3;
+
+        }elseif($edad > 13 && $edad <= 18){
+            $valEtarios = 4;
+
+        }elseif($edad > 18){
+            $valEtarios = 5;
+        }
 
         Alumnos::create([
             'primer_nombre' => request('primerNombre'),
@@ -117,8 +108,10 @@ class AlumnoController extends Controller
             'identificacion' => request('identificacion'),
             'genero' =>  request('genero'),
             'fch_nacimiento' =>  request('date'),
-            'salon_id' =>  request('profesor'),
-            'profesor_id' =>  request('curso'),            
+            'edad' =>  $edad,
+            'salon_id' =>  request('curso'),
+            'profesor_id' =>  request('profesor'),
+            'etario_id' =>  $valEtarios,  
         ]);
 
         return redirect()->route('home');
@@ -169,6 +162,42 @@ class AlumnoController extends Controller
             'profesor' => 'required',
             'curso' => 'required'
         ]);
+        
+        $fecha_nacimiento =  request('date');
+
+        $dia=date("d");
+        $mes=date("m");
+        $ano=date("Y");
+
+        $dianaz=date("d",strtotime($fecha_nacimiento));
+        $mesnaz=date("m",strtotime($fecha_nacimiento));
+        $anonaz=date("Y",strtotime($fecha_nacimiento));
+        
+        if (($mesnaz == $mes) && ($dianaz > $dia)) {
+            $ano=($ano-1); 
+        }
+        
+        if ($mesnaz > $mes) {
+            $ano=($ano-1);
+        }
+        //EDAD     
+        $edad=($ano-$anonaz);
+
+        if($edad < 5){
+            $valEtarios = 1;
+
+        }elseif($edad >= 5 && $edad <= 10){
+            $valEtarios = 2;
+
+        }elseif($edad > 10 && $edad <= 13){
+            $valEtarios = 3;
+
+        }elseif($edad > 13 && $edad <= 18){
+            $valEtarios = 4;
+
+        }elseif($edad > 18){
+            $valEtarios = 5;
+        }
 
         $alumnos = Alumnos::findOrFail($id);
         
@@ -180,8 +209,10 @@ class AlumnoController extends Controller
             'identificacion' => request('identificacion'),
             'genero' =>  request('genero'),
             'fch_nacimiento' =>  request('date'),
-            'salon_id' =>  request('profesor'),
-            'profesor_id' =>  request('curso'), 
+            'edad' =>  $edad,
+            'salon_id' =>  request('curso'),
+            'profesor_id' =>  request('profesor'), 
+            'etario_id' =>  $valEtarios,  
         ]); 
 
         return redirect()->route('home');

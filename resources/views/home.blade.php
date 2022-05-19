@@ -30,10 +30,10 @@
 									<td>{{ $alumnoItem->identificacion }}</td>
 									<td>{{ $alumnoItem->genero }}</td>									
 									<td>{{ date('Y/m/d', strtotime($alumnoItem->fch_nacimiento)) }}</td>
-									<td></td>								
+									<td>{{ $alumnoItem->edad }}</td>								
 									<td>{{ $alumnoItem->profesor }}</td>
 									<td>{{ $alumnoItem->curso }}</td>															
-									<td></td>
+									<td>{{ $alumnoItem->etario }}</td>
 									<td>
 										<a href="{{ route('crear.edit', $alumnoItem->id ) }}"><button class='btn btn-success btn-sm'>Editar</button></a>
 									</td>

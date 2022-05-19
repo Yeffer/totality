@@ -14,8 +14,10 @@ class Alumnos extends Model
         'identificacion',
         'genero',
         'fch_nacimiento',
+        'edad',        
         'salon_id',
         'profesor_id',
+        'etario_id'
     ];
 
 

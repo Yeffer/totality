@@ -20,10 +20,12 @@ class CreateAlumnosTable extends Migration
             $table->string('primer_apellido');
             $table->string('segundo_apellido');
             $table->string('identificacion');
-            $table->enum('genero', ['masculino', 'femenino'])->default('masculino');            
-            $table->timestamp('fch_nacimiento')->nullable();            
+            $table->enum('genero', ['Masculino', 'Femenino'])->default('Masculino');            
+            $table->timestamp('fch_nacimiento')->nullable();
+            $table->integer('edad');
             $table->unsignedBigInteger('salon_id');
             $table->unsignedBigInteger('profesor_id');
+            $table->unsignedBigInteger('etario_id');
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();  
 
@@ -34,6 +36,10 @@ class CreateAlumnosTable extends Migration
             $table->foreign('profesor_id')
                 ->references('id')
                 ->on('profesores');
+
+            $table->foreign('etario_id')
+                ->references('id')
+                ->on('etario');
         });
     }
 
